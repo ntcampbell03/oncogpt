@@ -8,8 +8,8 @@ import textwrap
 
 NUM_THREADS = 10
 DIR = './data'
-SEARCH_TERM = "dermatology"
-NUM_DOCS = 10
+SEARCH_TERM = "oncology"
+NUM_DOCS = 1000
 
 article_url = "https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi/BioC_json/{article_id}/ascii"
 pmc_id_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={search_term}&retmax={retmax}&retstart={retstart}"
@@ -37,7 +37,8 @@ def get_article(article_id):
     try:
         r_json = json.loads(r)
         print(f'{count}: Got article {article_id}')
-    except:
+    except Exception as e:
+        print(e)
         print(f'JSON load failed: {r}')
         return
     passages = [passage['text'] for passage in r_json[0]['documents'][0]['passages']]
@@ -68,9 +69,9 @@ def split(a, n):
 
 
 # Remove and remake directory
-# if os.path.exists(DIR):
-#     shutil.rmtree(DIR)
-# os.makedirs(DIR)
+if os.path.exists(DIR):
+    shutil.rmtree(DIR)
+os.makedirs(DIR)
 
 pmc_ids = get_pmc_ids(SEARCH_TERM, NUM_DOCS)
 
